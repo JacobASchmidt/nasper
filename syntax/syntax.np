@@ -1,0 +1,51 @@
+module syntax 
+
+import (
+    module1
+    module2
+)
+
+type foo struct 
+    member memberType
+
+type bar union 
+    member memberType 
+
+type foobar int
+
+type foobar () #empty tuple
+
+type foobar string 
+
+type generic[A] struct 
+    member A
+
+type List[A] union 
+    Empty ()
+    More  (A, 'List[A]) #'A denotes box<A> or unique_ptr<A>, just a heap allocated A 
+
+# types 
+# [A]; {A}; {A: B}; (A, B); string; W ? E #is result[W, E]
+# classes
+# () => (); (int, string) => float; &(int, string) => ; etc; |A|; &|A|;
+
+#the reference thing
+# just means cant be linearly consumed: &A means you can only do operations that arent linearly consumed
+
+
+def Func(arg type1, arg2 type2) returntype
+    if true
+        a = foo{.member = memberType{}}
+        b = bar.member(memberType{})
+    match List.Empty(())
+        case List.Empty(_)
+            return returntype{}
+        case List.More(first, 'rest)
+            return returntype{}
+def Func2[A, B ClassRestraint](arg A, argb B) A
+#equiv to 
+def Func2(arg .A, argb .B ClassRestraint) A 
+# might not want to worry about that for now
+
+def Func3(w .W ClassRestraint[.Error]) W ? E
+    

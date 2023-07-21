@@ -1,0 +1,35 @@
+module data
+
+import (
+    json
+)
+
+type Store actor 
+    fruits {string: int}
+
+type Fruit struct 
+    Name      string {.json = "name"}
+    Quantiity int    {.json = "quantity"}
+
+def (s &Store) FruitsJSON() string
+    return json.Format(s.fruits))
+
+def (s &Store) GetFruit(name string) maybe[Fruit]
+    if s.fruits[name]? is some(quantity)
+        return some(Fruit{.Name = name, .Quantiity = quantiity})
+    else
+        return none()
+
+def (s Store) AddFruit(f Fruit) Store
+    return s{.fruits = (fruits) => fruits{f.Name: f.Quantiity}}
+
+def (s Store) UpdateFruit(f Fruit) (Store, found bool)
+    if f.Name not in fruits
+        return (s, false)
+    return s.AddFruit(f)
+
+def (s Store) DeleteFruit(f Fruit) (Store, found bool)
+    if s.fruits[f.Name]? is some(_)
+        return (s{.fruits = (fruits) => delete(fruits, f.Name)}, true)
+    else 
+        return (s, true)

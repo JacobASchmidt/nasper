@@ -1,0 +1,58 @@
+module main
+
+import (
+    "data" 
+    "http"
+)
+
+def getFruits(s &data.Store, c http.Context) http.Result    
+    return c.Send(s.FruitsJSON())
+
+def getFruit(s &data.Store, c http.Context) http.Result 
+    name = c.Params("name")
+    match s.GetFruit(name)
+        case some(val)
+            return c.JSON(val)
+        case none()
+            return c.Status(404).JSON(("message", "Fruit not found"))
+        
+def addFruit(s data.Store, c http.Context) (data.Store, http.Result) 
+    match c.ParseBody[data.Fruit]()
+        case ok(fruit)  
+            return (
+                s.AddFruit(fruit), 
+                c.Status(201).JSON(("message", "Fruit added successfuly")
+            )
+        case err(e)
+            return (
+                s,
+                c.Status(400).JSON(("message", "Invalid Body Request")
+            )
+
+def updateFruit(s data.Store, c http.Context) (data.Store, http.Result)
+    name = c.Params("name")
+    match c.ParseBody[data.Fruit]()
+        case ok(fruit)
+            (s, found) = s.UpdateFruit(fruit)
+            if found    
+                return (s, c.JSON(("message", "Fruit quantity update successfully")))
+            else 
+                return (s, c.Status(404).JSON(("message", "Fruit not found")))
+
+def deleteFruit(s data.Store, c http.Context) (data.Store, http.Result)
+    name = c.Params("name")
+    (s, found) = s.DeleteFruit(name)
+    if found 
+        return (s, c.JSON(("message", "Fruit deleted successfully")))
+    else 
+        return (s, c.Status(404).JSON(("message", "Fruit not found")))
+
+def main()
+    app = http.New(data.Store{})
+        .Get("/fruits", getFruits)
+        .Get("/fruits/:name", getFruit)
+        .Post("/fruits", addFruit)
+        .Put("/fruits/:name", updateFruit)
+        .Delete("fruits/:name", deleteFruit)
+
+    must(app.Listen())

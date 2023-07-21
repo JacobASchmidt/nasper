@@ -1,0 +1,115 @@
+module builtin
+
+def map(a |.A|, f &(A) => .B) |B|
+    match a 
+        case |first, ...rest|
+            return |f(first), ...map(rest, f)|
+        case ||
+            return ||
+
+def filter(a |.A|, f &(&A) => bool) |A|
+    match a 
+        case |first, ...rest|
+            if f(first)
+                return |first, ...filter(rest, f)|
+            else 
+                return filter(rest, f)
+        case ||
+                return ||
+
+def reduce(a |.A|, init .B, f &(B, A) => B) B 
+    match a
+        case |first, ...rest|
+            return reduce(rest, f(init, first), f)
+        case ||
+            return init 
+
+def any(a |.A|, f &(&A) => bool) bool 
+    match a 
+        case |first, ...rest|
+            if f(first)
+                return true 
+            else 
+                return any(rest, f)
+        case ||
+            return false
+
+def all(a |.A|, f &(&A) => bool) bool 
+    match a 
+        case |first, ...rest|
+            if not f(first)
+                return false 
+            else 
+                return all(rest, f)
+        case ||
+            return true 
+
+def chain(a |.A|, b |A|) |A|
+    match a 
+        case |first, ...rest|
+            return |first, ...chain(rest, b)|
+        case ||
+            return b 
+
+def zip(a |.A|, b |.B|) |(A, B)|
+    match (a, b)
+        case (|aFirst, ...aRest|, |bFirst, ...bRest|)
+            return |(aFirst, bFirst), ...zip(aRest, bRest)|
+        case _ 
+            return ||
+
+def take(a |.A|, n int) |A|
+    match a 
+        case |first, ...rest|
+            if n == 0
+                return ||
+            else 
+                return |first, ...take(rest, n - 1)|
+        case ||
+            return ||
+
+def drop(a |.A|, n int) |A|
+    if n == 0 
+        return a 
+    match a
+        case |_, ...rest|
+            return drop(rest, n - 1)
+        case ||
+            return ||
+
+def takeWhile(a |.A|, f &(&A) => bool) |A|
+    match a 
+        case |first, ...rest|
+            if f(first)
+                return |first, ...takeWhile(rest, f)|
+            else
+                return ||
+        case ||
+            return ||
+def dropWhile(a |.A|, f &(A) => bool) |A|
+    match a 
+        case |first, ...rest|
+            if f(first)
+                return dropWhile(rest, f)
+            else 
+                return a 
+        case ||
+            return ||
+
+class error[E] interface 
+    (E) Error() string
+
+
+type maybe union 
+    some .A 
+    none 
+
+
+class reader[R, E error] interface 
+    (R) Read(bound maybe[int]) (maybe[R], &[byte]) ? E 
+
+class writer[W, E error] interface 
+    (W) Write(&[byte]) W ? E 
+
+
+

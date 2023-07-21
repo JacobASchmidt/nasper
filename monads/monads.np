@@ -1,0 +1,19 @@
+module monads 
+
+class Interface[M[_]] interface 
+    (M[.A]) Bind(f &(A) => M[.B]) M[B]
+    Raise(.A) M[A]
+
+def Reduce(a |.A|, init B set{.M[.El] Interface, .El} f &(El, A) => M[El]) M[El]
+    match B 
+        case M[El]
+            match a
+                case |first, ...rest|
+                    return Reduce(rest, init.Bind((init) => f(init, first)), f)
+                case ||
+                    return init 
+        case El 
+            match a 
+                case |first, ...rest|
+                    return Reduce(rest, f(init, first), f)
+    
