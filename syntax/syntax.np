@@ -22,7 +22,7 @@ type generic[A] struct
 
 type List[A] union 
     Empty ()
-    More  (A, 'List[A]) #'A denotes box<A> or unique_ptr<A>, just a heap allocated A 
+    More  (A, 'List[A]) #'A denotes box<A> or unique_ptr<A>, just a heap allocated A that destroys in "destructor"
 
 # types 
 # [A]; {A}; {A: B}; (A, B); string; W ? E #is result[W, E]
@@ -48,4 +48,3 @@ def Func2(arg .A, argb .B ClassRestraint) A
 # might not want to worry about that for now
 
 def Func3(w .W ClassRestraint[.Error]) W ? E
-    

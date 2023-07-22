@@ -1,0 +1,43 @@
+//os:unix 
+module os 
+
+
+import (
+    "syscall/unix"
+    "strings"
+)
+
+type WritingError union 
+    SystemError int 
+    ShortWrite  (int, .W)
+
+type stdout actor 
+
+Stdout = stdout()
+
+def (s stdout) Write(bytes &[byte]) stdout ? WritingError
+    out = unix.Write(unix.Int(0), unix.Pointer(byte), unix.Int(len(bytes)))
+    out = out.Int()
+    if out < 0
+        raise WritingError.BadWrite(out)
+    if out < n 
+        raise WritingError.ShortWrite((out, s))
+    return s
+
+type ReadingError union
+    SystemError int 
+
+type stdin actor
+    grower strings.Grower 
+
+def (s stdin) Read(n int??) (stdin??, string) ? ReadingError
+    n = n ?? 32
+    s.grower = (grower) => grower.Anticipate(n)
+    out = unix.Read(unix.Int(1), unix.Pointer(s.grower.Bytes()), unix.Int(n))
+    out = out.Int()
+    if out < n 
+        raise ReadingError.BadRead(-out)
+    s.grower = (grower) => grower.DidWrite(out)
+    (s.grower, str) = (s.grower) => grower.String()
+    return (s, str)
+
