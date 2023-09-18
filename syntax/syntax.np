@@ -3,7 +3,7 @@ module syntax
 import (
     module1
     module2
-    alias module3
+    alias module3 # Thoughts on this?
 )
 
 type foo struct 
@@ -33,11 +33,12 @@ type List[A] union
 #   *A means
 #   'A means box<A> or unique_ptr<A>, just a heap allocated A that destroys in "destructor"
 
-# types 
-# [A]; {A}; {A: B}; (A, B); string; W ? E #is result[W, E]
-# classes
+# types # What is `result` here?
+# [A]; {A}; {A: B}; (A, B); string; W ? E #is result[W, E] 
+# streams
+# |A|;
+# classes # Are these not functions/closures?
 # () => (); (int, string) => float; &(int, string) => ; etc; |A|; &|A|;
-
 
 def Func(arg type1, arg2 type2) returntype
     if true
