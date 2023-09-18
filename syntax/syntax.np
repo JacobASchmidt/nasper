@@ -27,8 +27,8 @@ type List[A] union
 
 # The reference thing
 #    A means 
-#   #A means cant be linearly consumed
-#   &A means you can only do operations that arent linearly consumed
+#   #A means cant be linearly consumed                                    # How are these
+#   &A means you can only do operations that arent linearly consumed      # two different?
 #   .A means
 #   *A means
 #   'A means box<A> or unique_ptr<A>, just a heap allocated A that destroys in "destructor"
