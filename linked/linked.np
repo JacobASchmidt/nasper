@@ -1,0 +1,43 @@
+module linked
+
+type Node[A] struct
+    data a
+    next Node[A]
+
+type List[A] struct 
+    head 'Node[A]
+    tail 'Node[B]
+    totalElements uint64
+
+def New[A]() List[A]
+    return List{
+        .first = null,
+        .last = null,
+        .totalElements = 0
+    }
+
+def (l &List[A]) Add(ele A) void
+    node = Node[A]{
+            .data = ele
+            next = null
+        }
+
+    if l.totalElements = 0
+        l.first = node
+    else 
+        l.tail.next = node
+
+    l.tail = node
+    l.totalElements++
+
+def (l &List[A]) RemoveAt(pos uint64) void
+    if pos > l.totalElements
+        panic("Index {} was out of range {}", pos, l.totalElements)
+    
+    # Remove the element
+    
+def (l &List[A]) Peek(ele A) A
+    return l.head
+
+def (l &List[A]) Count(ele A) uint64
+    return l.totalElements

@@ -1,0 +1,53 @@
+module dicts 
+
+import (
+    "linked",
+    "lists",
+    "serialize"
+)
+
+type KeyValuePair[A, B] struct
+    key A
+    value B
+
+type Dict[A, B] struct 
+    loadFactor float32
+    table |linked.List[KeyValuePair[A, B]]|
+    totalElements uint32
+    
+def New[A, B](initialSize uint32 = 11, loadFactor float32 = 0.75) Dict[A, B]
+    if initialSize == 0
+        panic("initialSize must not be 0", initialSize)
+
+    if loadFactor <= 0 || loadFactor >= 1
+        panic("loadFactor of {} but be greater than 0 and less than 1", loadFactor)
+
+    return Dict[A, B]{
+        .loadFactor = loadFactor
+        .table = lists.New[linked.List](initialSize, () => linked.New[KeyValuePair[A, B]]())
+    }
+
+def (d &Dict[A, B]) Add(key A, value B) void
+    def hashAndAdd(list &|linked.List[KeyValuePair[A, B]]|, key A, value B)
+        hash = serialize.hash(key)
+        location = hash % len(list)
+        linked = list[location]
+        linked.Add(KeyValuePair[A, B]{
+            .key = key
+            .value = value
+        })
+
+    elements = d.totalElements + 1
+    if(elements > floor(d.loadFactor * len(d.table)))
+        oldLength = len(d.table)
+        newList = lists.New[linked.List](oldLength * 2, () => linked.New[KeyValuePair[A, B]]())
+        d.table = reduce(d.table, newList, (list, ele) => {
+            hashAndAdd(list, key, value)
+            return list
+        })
+
+    d.totalElements = elements
+    hashAndAdd(d.table, key, value)
+
+def (d &Dict[A, B]) Clear() void
+    d.table = lists.New[linked.List](len(d.table), () => linked.New[KeyValuePair[A, B]]())

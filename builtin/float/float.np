@@ -1,0 +1,7 @@
+module float
+
+def floor(f float) float
+    # Magic
+
+def ceil(f float): float
+    # Magic
