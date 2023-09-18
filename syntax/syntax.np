@@ -3,6 +3,7 @@ module syntax
 import (
     module1
     module2
+    alias module3 # Thoughts on this?
 )
 
 type foo struct 
@@ -22,16 +23,22 @@ type generic[A] struct
 
 type List[A] union 
     Empty ()
-    More  (A, 'List[A]) #'A denotes box<A> or unique_ptr<A>, just a heap allocated A that destroys in "destructor"
+    More  (A, 'List[A])
 
-# types 
-# [A]; {A}; {A: B}; (A, B); string; W ? E #is result[W, E]
-# classes
+# The reference thing
+#    A means 
+#   #A means cant be linearly consumed                                    # How are these
+#   &A means you can only do operations that arent linearly consumed      # two different?
+#   .A means
+#   *A means
+#   'A means box<A> or unique_ptr<A>, just a heap allocated A that destroys in "destructor"
+
+# types # What is `result` here?
+# [A]; {A}; {A: B}; (A, B); string; W ? E #is result[W, E] 
+# streams
+# |A|;
+# classes # Are these not functions/closures?
 # () => (); (int, string) => float; &(int, string) => ; etc; |A|; &|A|;
-
-#the reference thing
-# just means cant be linearly consumed: &A means you can only do operations that arent linearly consumed
-
 
 def Func(arg type1, arg2 type2) returntype
     if true

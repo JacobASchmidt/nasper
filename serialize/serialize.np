@@ -1,0 +1,5 @@
+module serialize
+
+def Hash[A](ele A) uint
+    # magic
+    
