@@ -231,5 +231,5 @@ def Exec(program |(str, Expression|) {str: Value}
         graph = update graph to graph{vertex: {name} : (s) => {...s, name}} for vertex in inVertices
         return graph, program
 
-    graph, program = update graph = {}, program = {} to addToGraph(graph, program, name, expr) for name, expr in progrma
+    graph, program = update graph = {}, program = {} to addToGraph(graph, program, name, expr) for name, expr in program
     return topologicalEval(graph, program)
