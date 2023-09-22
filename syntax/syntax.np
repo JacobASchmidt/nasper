@@ -57,3 +57,12 @@ def Func2(arg .A, argb .B ClassRestraint) A
 # might not want to worry about that for now
 
 def Func3(w .W ClassRestraint[.Error]) W ? E
+
+
+#some cool stuff
+def count(vals |int|)
+    return update d = {} to d{val: 1 : (cnt) => cnt + 1} for val in vals
+
+def groupBy(vals |.A|, f &(&A) => .B) {B: A}
+    return update d = {} to d{f(val): [val] : (vals) => [...vals, val]} for val in vals
+
