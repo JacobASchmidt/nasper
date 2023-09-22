@@ -15,7 +15,7 @@ type foobar int
 
 type foobar () #empty tuple
 
-type foobar string 
+type foobar str 
 
 type generic[A] struct 
     member A
@@ -25,7 +25,16 @@ type List[A] union
     More  (A, 'List[A]) #'A denotes box<A> or unique_ptr<A>, just a heap allocated A that destroys in "destructor"
 
 # types 
-# [A]; {A}; {A: B}; (A, B); string; W ? E #is result[W, E]
+# list is [A]; 
+# set is {A}; 
+# dict from A to B is {A: B}; 
+# tuple is (A, B); 
+# str; 
+# A ? E #is result[A, E] is union{ok A, err E}
+# A?? is maybe[A] is union{some a, none ()}
+# 'A is a boxed (heap allocated) A, linearly typed
+# *A is a frozen A, like an atomic shared ptr to a const val
+# .A declares a new type parameter in a function, and is not a type modifier itself, look below in the defs for further explanation
 # classes
 # () => (); (int, string) => float; &(int, string) => ; etc; |A|; &|A|;
 
