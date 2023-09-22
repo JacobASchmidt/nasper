@@ -32,6 +32,7 @@ type List[A] union
 # str; 
 # A ? E #is result[A, E] is union{ok A, err E}
 # A?? is maybe[A] is union{some a, none ()}
+# &A is a borrowed type to A, it means that the value will not be linearly consumed. There are rust like semantics for this
 # 'A is a boxed (heap allocated) A, linearly typed
 # *A is a frozen A, like an atomic shared ptr to a const val
 # .A declares a new type parameter in a function, and is not a type modifier itself, look below in the defs for further explanation
