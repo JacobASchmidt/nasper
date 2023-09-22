@@ -66,3 +66,14 @@ def count(vals |int|)
 def groupBy(vals |.A|, f &(&A) => .B) {B: A}
     return update d = {} to d{f(val): [val] : (vals) => [...vals, val]} for val in vals
 
+def filter(vals |.A|, f &(&A) => bool) |A|
+    return val for val in vals if f(val)
+
+#some shorthands
+def struct_() 
+    s = {.name = "foo", .age = 23}
+    #s is of type struct{name str, age int}
+
+#impl notes...
+# rn i really want int to be arbitratily sized (i get the tradeoffs, we would make a lot of number operations generic and allow for int8... etc)
+# i also like the idea of all strs being frozen, and just having [byte] and [rune] for mutable stuff... but ultimatly most ppl should just use format and strings.Builder
