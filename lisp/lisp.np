@@ -34,9 +34,9 @@ def Substitute(expr Expression, bound &{str: Value}) Expression
                         return Expression.Value(val)
                     return id
                 case Lambda({unbound, body})
-                    bound = update bound = copy(bound) to delete(bound, el) for el in unbound if el in bound
-                    body = Substitute(body, bound)
-                    return Expression.Value.Lambda({body, bound})
+                    newBound = update newBound = copy(newBound) to delete(newBound, el) for el in unnewBound if el in bound
+                    body = Substitute(body, newBound)
+                    return Expression.Value.Lambda({body, newBound})
 
 def (l Lambda) BetaReduce(args |Value|) Expression
     d = dict(zip(stream(l.Unbound), args))
