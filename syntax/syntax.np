@@ -58,6 +58,9 @@ def Func2(arg .A, argb .B ClassRestraint) A
 
 def Func3(w .W ClassRestraint[.Error]) W ? E
 
+#equiv to 
+def Func3[Error error, W ClassRestraint[Error]])(w W) W ? E
+
 
 #some cool stuff
 def count(vals |int|)
