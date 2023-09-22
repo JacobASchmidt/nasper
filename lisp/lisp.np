@@ -34,8 +34,8 @@ def Substitute(expr Expression, bound &{str: Value}) Expression
                         return Expression.Value(val)
                     return id
                 case Lambda({unbound, body})
-                    newBound = update newBound = copy(bound) to delete(newBound, el) for el in unbound if el in bound
-                    body = Substitute(body, newBound)
+                    bound = update bound = copy(bound) to delete(bound, el) for el in unbound if el in bound
+                    body = Substitute(body, bound)
                     return Expression.Value.Lambda({body, bound})
 
 def (l Lambda) BetaReduce(args |Value|) Expression
@@ -231,5 +231,5 @@ def Exec(program |(str, Expression|) {str: Value}
         graph = update graph to graph{vertex: {name} : (s) => {...s, name}} for vertex in inVertices
         return graph, program
 
-    graph, program = update graph = {}, program = {} to addToGraph(graph, program, name, expr) for name, expr in program
+    graph, program = update graph = {}, program = {} to addToGraph(graph, program, name, expr) for name, expr in programc
     return topologicalEval(graph, program)
