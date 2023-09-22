@@ -65,7 +65,7 @@ def Tokenize(in |rune|) |Token|
     
     match in 
         case |letter if alphanum(letter), ...rest|
-            (str, rest) = strs.TakeWhile(|letter, ...rest|, (el) => isAlphanum(el))
+            str, rest = strs.TakeWhile(|letter, ...rest|, (el) => isAlphanum(el))
             return |tokenizeAlphanum(str), ...Tokenize(rest)|
         case |'(', ...rest|
             return |Token.OpenParen(), ...Tokenize(rest)|
