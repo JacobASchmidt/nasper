@@ -252,7 +252,7 @@ def Exec(program |(str, Expression|) {str: Value}
                 graph, neighbors = dicts.Extract(graph, name)
                 if neighbors is some(neighbors)
                     def doSubsitute(queue queues.Queue[str], program {str: (Expression, indegree int), neighbor str) (queues.Queue[str], {str: (Expression, indegree int))
-                        program = program[neighbor = ((expr, indegree)) => (Substitute(expr, {name: value}), indegree - 1)]
+                        program = program{neighbor: ((expr, indegree)) => (Substitute(expr, {name: value}), indegree - 1)}
                         if program[neighbor][1] == 0
                             queue = queue.Add(neighbor)
                         return queue, program
