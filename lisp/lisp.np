@@ -248,7 +248,7 @@ def Exec(program |(str, Expression|) {str: Value}
                 program, val = dicts.Extract(program, name)
                 expr, indegree = must(val, "undeclared identifier {}", name)
                 value = Eval(expr)
-                output = output[name = value]
+                output = output{name: value}
                 graph, neighbors = dicts.Extract(graph, name)
                 if neighbors is some(neighbors)
                     def doSubsitute(queue queues.Queue[str], program {str: (Expression, indegree int), neighbor str) (queues.Queue[str], {str: (Expression, indegree int))
