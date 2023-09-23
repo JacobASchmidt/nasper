@@ -4,16 +4,39 @@ import (
     "lists"
     "dicts"
     "strs"
+    "format"
 )
 
 type Lambda struct 
     Unbound [str]
     Body    'Expression
 
+def (l &Lambda) Format() str 
+    return format.String("(lambda ({}) {body})", format.Join(stream(l.Unbound), " "), l.body.Format())
+
 type Value union 
     None       ()
-    Identifier str
-    Lambda     Lambda
+    Identifier  str
+    Lambda      Lambda    
+    Str         str
+    Int         int
+    Float       float 
+    BuiltinFunc BuiltinFunc
+
+def (v &Value) Format() str 
+    match v 
+        case Value.None
+            return "None"
+        case Value.Lambda(l)
+            return l.Format()
+        case Value.Str(s)   
+            return s 
+        case Value.Int(i)
+            return format.String("{}", i)
+        case Value.Float(f)
+            return format.String("{}", f)
+        case Value.BuiltinFunc(f)
+            return f.Format()
 
 type Expression union
     List [Expression]
@@ -61,12 +84,24 @@ def Tokenize(in |rune|) |Token|
             case "def"
                 return Token.Define()
             case _
-                return Token.Value.Identifier(word)
-    
+                def isDigit(r rune) bool    
+                    return '0' <= r and r <= '9'
+                if all(runes(word), isDigit)
+                    return Token.Value.Int(parse.Int(word))
+                elif strs.CountRune(word, '.') == 1 and all(runes(word), (el) => isDigit(el) or el == '.')
+                    return Token.Value.Float(parse.Float(word))
+                else
+                    return Token.Value.Identifier(word)
+    def parseStr(input |rune|) |Token|
+        runes = update runes = [] to [...runes, rune] for rune in input while rune != '"' and (len(runes) != 0 and runes[len(runes) - 1] != '\\')
+        rest = drop(input, 1)
+        return |Token.Str(str(runes), ...Tokenize(input))|
     match in 
         case |letter if alphanum(letter), ...rest|
             str, rest = strs.TakeWhile(|letter, ...rest|, (el) => isAlphanum(el))
             return |tokenizeAlphanum(str), ...Tokenize(rest)|
+        case |'"', ...rest|
+            return parseStr(rest)
         case |'(', ...rest|
             return |Token.OpenParen(), ...Tokenize(rest)|
         case |')', ...rest|
@@ -169,12 +204,16 @@ def Eval(expr Expression) Value
         case Expression.Value(v):
             return v 
         case Expression.List(l):
+            if len(l) == 0
+                panic("Empty list")
             l = [Eval(el) for el in l]
             match l[0]
                 case Identifier(id)
                     panic("Unbound identifier {}", id)
                 case Lambda(lambda)
                     return Eval(lambda.BetaReduce(lists.StreamFrom(1)))
+                case BuiltinFunc(f)
+                    return f.Invoke(args[1:])
                 case _
                     panic("expected lambda function call, got {}", l[0])
 

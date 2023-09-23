@@ -1,0 +1,60 @@
+module lisp
+
+type BuiltinFunc union  
+    Add    ()
+    Sub    ()
+    Div    ()
+    Mul    ()
+    Print  ()
+    Format ()
+    
+def (b BuiltinFunc) Invoke(args &[Value]) Value 
+    match b 
+        case BuiltinFunc.Add()
+            if all(stream(args), (el) => el is Value.Int())
+                args = val for el in args if el is Value.Int(val)
+                i = update i = 0 to i + val for val in args 
+                return Value.Int(i)
+            if all(stream(args), (el) => el is Value.Float())
+                args = val for el in args if el is Value.Float(val)
+                f = update f = 0.0 to f + val for val in args 
+                return Value.Float(f)
+            if all(stream(args), (el) => el is Value.Str())
+                args = val for el in args if el is Value.Str(val)
+                s = update s = strs.NewBuilder() to s.Append(val) for val in args 
+                return value.Str(s)
+            panic("add can only be called on str, float, and int")
+        case BuiltinFunc.Sub()
+            if all(stream(args), (el) => el is Value.Int())
+                if len(args) == 0
+                    panic("sub can only be called with at least one value")
+                args = val for el in args if el is Value.Int(val)
+                rest, i = next(args)!
+                i = update i to i - val for val in rest 
+                return Value.Int(i)
+            if all(stream(args), (el) => el is Value.Float())
+                if len(args) == 0
+                    panic("sub can only be called with at least one value")
+                args = val for el in args if el is Value.Flaot(val)
+                rest, f = next(args)!
+                f = update f to f - val for val in rest 
+                return Value.Float(i)
+            panic("sub can only be called on float and int")
+        case BuiltinFunc.Mul()
+            if all(stream(args), (el) => el is Value.Int())
+                args = val for el in args if el is Value.Int(val)
+                i = update i = 1 to i * val for val in args 
+                return Value.Int(i)
+            if all(stream(args), (el) => el is Value.Float())
+                args = val for el in args if el is Value.Float(val)
+                f = update f = 1.0 to f * val for val in args 
+                return Value.Float(f)
+            panic("mul can only be called on float and int")
+        case BuiltinFunc.Print()
+            force(print(arg.Format()) for arg in args)
+            return Value.None()
+        case BuiltinFunc.Format()
+            if len(args) != 1
+                panic("format can only be called with one argument")
+            return Value.Str(args[0].Format())
+        
