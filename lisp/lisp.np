@@ -263,12 +263,12 @@ def Exec(program |(str, Expression|) {str: Value}
                     panic("loop detected in defs")
                 return output
         builtinFuncs = {
-            "+": Expression.Value.BuiltinFunc.Add(),
-            "-": Expression.Value.BuiltinFunc.Sub(),
-            "*": Expression.Value.BuiltinFunc.Mul(),
-            "/": Expression.Value.BuiltinFunc.Div()
-            "print": Expression.Value.BuiltinFunc.Print(),
-            "format": Expression.Value.BuiltinFunc.Format()
+            "+": Value.BuiltinFunc.Add(),
+            "-": Value.BuiltinFunc.Sub(),
+            "*": Value.BuiltinFunc.Mul(),
+            "/": Value.BuiltinFunc.Div()
+            "print": Value.BuiltinFunc.Print(),
+            "format": Value.BuiltinFunc.Format()
         }
         beginVerticies = queues.Collect(name for name, (expr, indegree) in program if indegree == 0)
         return impl(queue, graph, program, builtinFuncs)
