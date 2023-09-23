@@ -5,3 +5,6 @@ linear types, monomorphized first class streams, fully functional, as fast as C,
 oh also monomorphized existential typing...
 
 look at the lisp module for some basic use cases
+
+if you clone this thing... lua is pretty good for syntax highliting
+
