@@ -58,7 +58,7 @@ def Substitute(expr Expression, bound &{str: Value}) Expression
                         return Expression.Value(val)
                     return id
                 case Lambda({unbound, body})
-                    newBound = update newBound = copy(newBound) to delete(newBound, el) for el in unnewBound if el in bound
+                    newBound = update newBound = copy(bound) to delete(newBound, el) for el in unnewBound if el in bound
                     body = Substitute(body, newBound)
                     return Expression.Value.Lambda({body, newBound})
 
