@@ -8,3 +8,4 @@ look at the lisp module for some basic use cases
 
 if you clone this thing... lua is pretty good for syntax highliting
 
+oh and also besides strs (maybe) the language is not garbage collected
