@@ -262,8 +262,16 @@ def Exec(program |(str, Expression|) {str: Value}
                 if len(graph) != 0
                     panic("loop detected in defs")
                 return output
+        builtinFuncs = {
+            "+": Expression.Value.BuiltinFunc.Add(),
+            "-": Expression.Value.BuiltinFunc.Sub(),
+            "*": Expression.Value.BuiltinFunc.Mul(),
+            "/": Expression.Value.BuiltinFunc.Div()
+            "print": Expression.Value.BuiltinFunc.Print(),
+            "format": Expression.Value.BuiltinFunc.Format()
+        }
         beginVerticies = queues.Collect(name for name, (expr, indegree) in program if indegree == 0)
-        return impl(queue, graph, program, {})
+        return impl(queue, graph, program, builtinFuncs)
 
     def addToGraph(graph {str: {str}}, program {str: (Expression, indegree int)}, name str, expr Expression) (graph {str: {str}}, program {str: (Expression, indegree int)})
         inVertices = undefined(expr)
