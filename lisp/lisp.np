@@ -58,7 +58,7 @@ def Substitute(expr Expression, bound &{str: Value}) Expression
                         return Expression.Value(val)
                     return id
                 case Lambda({unbound, body})
-                    newBound = update newBound = copy(bound) to delete(newBound, el) for el in unnewBound if el in bound
+                    update newBound = copy(bound) to delete(newBound, el) for el in unnewBound if el in bound
                     body = Substitute(body, newBound)
                     return Expression.Value.Lambda({body, newBound})
 
@@ -94,7 +94,7 @@ def Tokenize(in |rune|) |Token|
                 else
                     return Token.Value.Identifier(word)
     def parseStr(input |rune|) |Token|
-        runes = update runes = [] to [...runes, rune] for rune in input while rune != '"' and (len(runes) != 0 and runes[len(runes) - 1] != '\\')
+        update runes = [] to [...runes, rune] for rune in input while rune != '"' and (len(runes) != 0 and runes[len(runes) - 1] != '\\')
         rest = drop(input, 1)
         return |Token.Str(str(runes), ...Tokenize(input))|
     match in 
@@ -276,8 +276,8 @@ def Exec(program |(str, Expression|) {str: Value}
     def addToGraph(graph {str: {str}}, program {str: (Expression, indegree int)}, name str, expr Expression) (graph {str: {str}}, program {str: (Expression, indegree int)})
         inVertices = undefined(expr)
         program = program{name: (expr, len(inVertices))}
-        graph = update graph to graph{vertex: {name} : (s) => {...s, name}} for vertex in inVertices
+        update graph to graph{vertex: {name} : (s) => {...s, name}} for vertex in inVertices
         return graph, program
 
-    graph, program = update graph = {}, program = {} to addToGraph(graph, program, name, expr) for name, expr in program
+    update graph = {}, program = {} to addToGraph(graph, program, name, expr) for name, expr in program
     return topologicalEval(graph, program)
