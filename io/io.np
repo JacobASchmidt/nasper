@@ -5,8 +5,8 @@ import (
     "unicode"
 )
 
-def Stream(r reader[.E]) |&[byte] ? E|
-    match r.Read(none())
+def Stream(r <- .E) |&[byte] ? E|
+    match <- r
         case ok((some(r), bytes))
             return |ok(bytes), ...Stream(r)|
         case ok((none(), bytes))
@@ -17,8 +17,8 @@ def Stream(r reader[.E]) |&[byte] ? E|
         case err(e)
             return |err(e)|
 
-def Bytes(r reader[.E]) |byte ? E|
-    match r.Read(none())
+def Bytes(r <- .E) |byte ? E|
+    match <- r
         case ok((some(r), bytes))
             return stream(bytes)
                 then unicode.Runes()
@@ -31,8 +31,8 @@ def Bytes(r reader[.E]) |byte ? E|
         case err(e)
             return |err(e)|
 
-def Runes(r reader[.E]) |rune ? E|  
-    match r.Read(none())
+def Runes(r <- .E) |rune ? E|  
+    match <- r
         case ok((some(r), bytes))
             return stream(bytes)
                 then map((byte) => ok(byte))
@@ -43,17 +43,17 @@ def Runes(r reader[.E]) |rune ? E|
         case err(e)
             return |err(e)|
 
-type CopyError[R reader[.E1], W writer[.E2]] union 
+type CopyError[R <- .E1, W .E2 <-] union 
     FailedRead (W, E1)
     FailedWrite (maybe[R], E2)
 
-def readTo(r R reader[.E1], w W writer[.E2], bound maybe[int]) (maybe[R], W) ? CopyError
-    (r, b) = try r.Read(bound) wrap (e) => CopyError.FailedRead((w, e))
-    w = try w.Write(b) wrap (e) => CopyError.FailedWrite((r, e))
+def readTo(r R <- .E1, w W .E2 <-, bound maybe[int]) (maybe[R], W) ? CopyError
+    r, b = try <-(bound) r wrap e with CopyError.FailedRead((w, e))
+    w = try w <- b wrap e with CopyError.FailedWrite((r, e))
     return ok((r, w))
 
 def Copy(r reader[.E1], w W writer[.E2]) W ? CopyError
-    (r, w) = try readTo(r, w, none())
+    r, w = try readTo(r, w, none())
     if r is some(r)
         return Copy(r, w)
     else 
@@ -65,4 +65,4 @@ def CopyAtMost(r reader[.E1], w W writer[.E2], n int) (maybe[R], W) ? CopyError
 type CopyError[R reader[.E1], W writer[.E2]] union 
     FailedRead (W, E1)
     FailedWrite (maybe[R], E2)
-    Exa
+    
